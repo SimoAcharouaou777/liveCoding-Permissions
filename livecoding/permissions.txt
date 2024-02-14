@@ -1,0 +1,83 @@
+// Register Controller :
+
+ $user->assignRole('admin');
+        return $user;
+
+// User Model : 
+
+use HasRoles;
+
+//DatabaseSeeder : 
+
+ $admin = Role::create([
+            'name' => 'admin'
+        ]);
+        $user = Role::create([
+            'name' => 'user'
+        ]);
+        Permission::create([
+            'name' => 'delete post',
+        ]);
+        $admin->givePermissionTo('');
+
+//Posts view : 
+
+auth()->user()->HasRole('admin')
+
+kernel : 
+ 'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+
+//routes
+
+->middleware('can:delete post');
+
+-------------------------------------------
+// PermissionController.php
+
+use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Permission;
+
+class PermissionController extends Controller
+{
+    public function createPermissions()
+    {
+        Permission::create([
+            'name' => 'delete post',
+        ]);
+
+        // You can create more permissions as needed
+
+        return redirect()->back()->with('success', 'Permissions created successfully.');
+    }
+}
+----------------------------------------
+// RoleController.php
+
+use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+class RoleController extends Controller
+{
+    public function createRoles()
+    {
+        $admin = Role::create([
+            'name' => 'admin'
+        ]);
+
+        $user = Role::create([
+            'name' => 'user'
+        ]);
+
+        // Assign permissions to roles
+        $admin->givePermissionTo('delete post');
+
+        // You can assign more permissions as needed
+
+        return redirect()->back()->with('success', 'Roles created successfully.');
+    }
+}
+
+
