@@ -13,9 +13,11 @@
                 </div>
                 <div class="card-footer">
                     Created by: {{ $post->user->name }}
-                    @if(auth()->check() && $post->user_id == auth()->user()->id)
+                    @if(auth()->check() && $post->user_id == auth()->user()->id || auth()->user()->HasRole('admin'))
                         <div class="mt-2">
+                        @can('delete post')
                             <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary">Edit</a>
+                        @endcan
                             <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display: inline-block">
                                 @csrf
                                 @method('DELETE')
